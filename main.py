@@ -12,6 +12,8 @@ import asyncio
 import uuid
 import json
 
+
+
 # Initialize Firebase
 firebase_credentials = os.environ.get("FIREBASE_CREDENTIALS")
 cred = credentials.Certificate(firebase_credentials)
@@ -192,6 +194,18 @@ async def monitor_prices():
         
         await asyncio.sleep(60)  
 
+async def test_api(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = "https://api.dexscreener.com/latest/dex/search?q=So11111111111111111111111111111111111111112"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            await update.message.reply_text(f"API Response: {response.json()}")
+        else:
+            await update.message.reply_text(f"Error: {response.status_code}")
+    except Exception as e:
+        await update.message.reply_text(f"Request failed: {str(e)}")
+
+
 def main():
     """Start the Telegram bot."""
     load_tracking_data()  # Load tracking data from Firebase on startup
@@ -201,6 +215,8 @@ def main():
     application.add_handler(CommandHandler("track", track))
     application.add_handler(CommandHandler("delete", delete))
     application.add_handler(CommandHandler("list", list_alerts))
+    application.add_handler(CommandHandler("testapi", test_api))
+
 
     loop = asyncio.get_event_loop()
     loop.create_task(monitor_prices())  
