@@ -13,7 +13,7 @@ import uuid
 import json
 
 # Initialize Firebase
-firebase_credentials = json.loads(os.getenv("FIREBASE_CREDENTIALS"))
+firebase_credentials = json.loads(os.environ.get("FIREBASE_CREDENTIALS"))
 cred = credentials.Certificate(firebase_credentials)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
